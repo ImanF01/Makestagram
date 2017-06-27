@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Any-FO-DEZ">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Home View Controller-->
+        <scene sceneID="TsM-Qh-cJo">
+            <objects>
+                <viewController id="Iew-eD-E5s" customClass="HomeViewController" customModule="Makestagram" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ID3-jD-l8l"/>
+                        <viewControllerLayoutGuide type="bottom" id="B80-PZ-BKZ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="TwL-TA-1H9">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nLS-cd-tBi">
+                                <rect key="frame" x="16" y="0.0" width="343" height="667"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="PostImageCell" id="Fo5-m9-1Y7">
+                                        <rect key="frame" x="0.0" y="28" width="343" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Fo5-m9-1Y7" id="Z55-U3-VF0">
+                                            <rect key="frame" x="0.0" y="0.0" width="343" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="Iew-eD-E5s" id="H2w-Lp-JsR"/>
+                                    <outlet property="delegate" destination="Iew-eD-E5s" id="Pmn-3Z-SFE"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="nLS-cd-tBi" firstAttribute="top" secondItem="TwL-TA-1H9" secondAttribute="topMargin" id="UH6-zw-KeG"/>
+                            <constraint firstItem="nLS-cd-tBi" firstAttribute="bottom" secondItem="TwL-TA-1H9" secondAttribute="bottomMargin" id="dLG-4r-kXH"/>
+                            <constraint firstItem="nLS-cd-tBi" firstAttribute="trailing" secondItem="TwL-TA-1H9" secondAttribute="trailingMargin" id="fHt-cl-dID"/>
+                            <constraint firstItem="nLS-cd-tBi" firstAttribute="leading" secondItem="TwL-TA-1H9" secondAttribute="leadingMargin" id="vnF-1X-JV1"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="fmC-rS-2Jr"/>
+                    <connections>
+                        <outlet property="tableView" destination="nLS-cd-tBi" id="37R-l6-zMC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DNF-Ep-S9v" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-679.20000000000005" y="-71.514242878560722"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Iq8-4h-Wnd">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Any-FO-DEZ" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="" image="tab_home_black" id="mmt-Uu-vQP">
+                        <inset key="imageInsets" minX="0.0" minY="7" maxX="0.0" maxY="-7"/>
+                    </tabBarItem>
+                    <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="pUd-Ka-dqk">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Iew-eD-E5s" kind="relationship" relationship="rootViewController" id="bQf-Ah-Qfl"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="npc-ec-sj8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-678" y="-882"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="tab_home_black" width="25" height="25"/>
+    </resources>
+</document>
