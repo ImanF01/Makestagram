@@ -30,6 +30,7 @@ struct UserService {
                 assertionFailure(error.localizedDescription)
                 return completion(nil)
             }
+            
             ref.observeSingleEvent(of: .value, with: { (snapshot) in
                 let user = User(snapshot: snapshot)
                 completion(user)

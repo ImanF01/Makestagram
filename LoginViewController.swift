@@ -47,28 +47,40 @@ extension LoginViewController: FUIAuthDelegate {
         if let error = error {
             assertionFailure("Error signing in: \(error.localizedDescription)")
         }
+        
+        // 1
         guard let user = user
             else { return }
+        
+        // 2
         let userRef = Database.database().reference().child("users").child(user.uid)
-        userRef.observeSingleEvent(of: .value, with: { (snapshot) in
+        
+        // 3
+        userRef.observeSingleEvent(of: .value, with: { [unowned self] (snapshot) in
             if let user = User(snapshot: snapshot) {
-                print("Welcome back, \(user.username).")
+                User.setCurrent(user)
+                
+                let storyboard = UIStoryboard(name: "Main", bundle: .main)
+                if let initialViewController = storyboard.instantiateInitialViewController() {
+                    self.view.window?.rootViewController = initialViewController
+                }
             } else {
-                print("New user!")
+                // 1
+                self.performSegue(withIdentifier: Constants.Segue.toCreateUsername, sender: self)
             }
         })
-      //  userRef.observeSingleEvent(of: .value, with: { [unowned self] (snapshot) in
         UserService.show(forUID: user.uid) { (user) in
-        //if let user = User(snapshot: snapshot) {
             if let user = user {
-            User.setCurrent(user)
-            
-            let initialViewController = UIStoryboard.initialViewController(for: .main)
-            self.view.window?.rootViewController = initialViewController
-            self.view.window?.makeKeyAndVisible()
-        } else {
-            self.performSegue(withIdentifier: Constants.Segue.toCreateUsername, sender: self)
+                // handle existing user
+                User.setCurrent(user, writeToUserDefaults: true)
+                
+                let initialViewController = UIStoryboard.initialViewController(for: .main)
+                self.view.window?.rootViewController = initialViewController
+                self.view.window?.makeKeyAndVisible()
+            } else {
+                // handle new user
+                self.performSegue(withIdentifier: Constants.Segue.toCreateUsername, sender: self)
+            }
         }
     }
-}
 }
