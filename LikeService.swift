@@ -15,13 +15,13 @@ struct LikeService {
             return success(false)
         }
     let currentUID = User.current.uid
-    let likesRef = Database.database().reference().child("postLikes").child(key).child(currentUID)
+        let likesRef = DatabaseReference.toLocation(.likes(postKey: key, currentUID: currentUID))
     likesRef.setValue(true) { (error, _) in
     if let error = error {
         assertionFailure(error.localizedDescription)
         return success(false)
         }
-        let likeCountRef = Database.database().reference().child("posts").child(post.poster.uid).child(key).child("like_count")
+        let likeCountRef = DatabaseReference.toLocation(.likesCount(posterUID: post.poster.uid, postKey: key))
         likeCountRef.runTransactionBlock({ (mutableData) -> TransactionResult in
             let currentCount = mutableData.value as? Int ?? 0
             mutableData.value = currentCount + 1
@@ -42,13 +42,13 @@ struct LikeService {
         }
         
         let currentUID = User.current.uid
-        let likesRef = Database.database().reference().child("postLikes").child(key).child(currentUID)
+        let likesRef = DatabaseReference.toLocation(.likes(postKey: key, currentUID: currentUID))
         likesRef.setValue(nil) { (error, _) in
             if let error = error {
                 assertionFailure(error.localizedDescription)
                 return success(false)
             }
-            let likeCountRef = Database.database().reference().child("posts").child(post.poster.uid).child(key).child("like_count")
+            let likeCountRef = DatabaseReference.toLocation(.likesCount(posterUID: post.poster.uid, postKey: key))
             likeCountRef.runTransactionBlock({ (mutableData) -> TransactionResult in
                 let currentCount = mutableData.value as? Int ?? 0
                 mutableData.value = currentCount - 1
@@ -76,8 +76,7 @@ struct LikeService {
             assertionFailure("Error: post must have key.")
             return completion(false)
         }
-        
-        let likesRef = Database.database().reference().child("postLikes").child(postKey)
+        let likesRef = DatabaseReference.toLocation(.isLiked(postKey: postKey))
         likesRef.queryEqual(toValue: nil, childKey: User.current.uid).observeSingleEvent(of: .value, with: { (snapshot) in
             if let _ = snapshot.value as? [String : Bool] {
                 completion(true)
