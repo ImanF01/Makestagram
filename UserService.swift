@@ -93,17 +93,20 @@ struct UserService {
             completion(followersKeys)
         })
     }
-    static func timeline(completion: @escaping ([Post]) -> Void) {
-        let currentUser = User.current
-        let timelineRef = DatabaseReference.toLocation(.timeline(uid: currentUser.uid))
-        timelineRef.observeSingleEvent(of: .value, with: { (snapshot) in
+    static func timeline(pageSize: UInt, lastPostKey: String? = nil, completion: @escaping ([Post]) -> Void) {
+            let currentUser = User.current
+            let ref = DatabaseReference.toLocation(.timeline(uid: currentUser.uid))
+            var query = ref.queryOrderedByKey().queryLimited(toLast: pageSize)
+            if let lastPostKey = lastPostKey {
+                query = query.queryEnding(atValue: lastPostKey)
+            }
+            
+            query.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let snapshot = snapshot.children.allObjects as? [DataSnapshot]
                 else { return completion([]) }
             
             let dispatchGroup = DispatchGroup()
-            
             var posts = [Post]()
-            
             for postSnap in snapshot {
                 guard let postDict = postSnap.value as? [String : Any],
                     let posterUID = postDict["poster_uid"] as? String

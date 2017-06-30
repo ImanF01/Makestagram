@@ -10,6 +10,7 @@ import UIKit
 import Kingfisher 
 
 class HomeViewController: UIViewController {
+    let paginationHelper = MGPaginationHelper<Post>(serviceMethod: UserService.timeline)
     let refreshControl = UIRefreshControl()
     @IBOutlet weak var tableView: UITableView!
     var posts = [Post]()
@@ -20,21 +21,17 @@ class HomeViewController: UIViewController {
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureTableView()
         reloadTimeline()
     }
-    
     func reloadTimeline() {
-        UserService.timeline { (posts) in
+        self.paginationHelper.reloadData(completion: { [unowned self] (posts) in
             self.posts = posts
-            
             if self.refreshControl.isRefreshing {
                 self.refreshControl.endRefreshing()
             }
-            
             self.tableView.reloadData()
-        }
+        })
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -48,6 +45,16 @@ class HomeViewController: UIViewController {
     }
 }
 extension HomeViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.section >= posts.count - 1 {
+            paginationHelper.paginate(completion: { [unowned self] (posts) in
+                self.posts.append(contentsOf: posts)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            })
+        }
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
     }
@@ -56,11 +63,11 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let post = posts[indexPath.section]
+        let post = posts[indexPath.section]
         switch indexPath.row {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "PostHeaderCell") as! PostHeaderCell
-            cell.usernameLabel.text = post.poster.username
+            cell.usernameLabel.text = User.current.username
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "PostImageCell") as! PostImageCell

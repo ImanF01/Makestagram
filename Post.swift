@@ -9,7 +9,7 @@
 import UIKit
 import FirebaseDatabase.FIRDataSnapshot
 
-class Post {
+class Post: MGKeyed {
     var isLiked = false
     var key: String?
     let imageURL: String
