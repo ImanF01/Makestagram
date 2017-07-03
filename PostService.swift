@@ -26,7 +26,6 @@ struct PostService {
         let currentUser = User.current
         let post = Post(imageURL: urlString, imageHeight: aspectHeight)
         let newPostKey = DatabaseReference.toLocation(.newPost(currentUID: currentUser.uid)).key
-
         UserService.followers(for: currentUser) { (followerUIDs) in
             let timelinePostDict = ["poster_uid" : currentUser.uid]
             var updatedData: [String : Any] = ["timeline/\(currentUser.uid)/\(newPostKey)" : timelinePostDict]
@@ -36,8 +35,19 @@ struct PostService {
             let postDict = post.dictValue
             updatedData["posts/\(currentUser.uid)/\(newPostKey)"] = postDict
             DatabaseReference.toLocation(.root).updateChildValues(updatedData)
-            }
-        }
+        let rootRef = DatabaseReference.toLocation(.root)
+        rootRef.updateChildValues(updatedData, withCompletionBlock: { (error, ref) in
+            let postCountRef = Database.database().reference().child("users").child(currentUser.uid).child("post_count")
+            postCountRef.runTransactionBlock({ (mutableData) -> TransactionResult in
+                let currentCount = mutableData.value as? Int ?? 0
+                
+                mutableData.value = currentCount + 1
+                
+                return TransactionResult.success(withValue: mutableData)
+            })
+        })
+    }
+}
     static func show(forKey postKey: String, posterUID: String, completion: @escaping (Post?) -> Void) {
         let ref = DatabaseReference.toLocation(.showPost(uid: posterUID,postKey: postKey))
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
